@@ -10,7 +10,8 @@ def get_metar():
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         data = response.json()
-        return data['data']['0']['raw_text']
+        return data['data'][0]['raw_text']
+
     else:
         return "Failed to fetch METAR data"
 
