@@ -1,25 +1,50 @@
-from flask import Flask, render_template
+from flask import Flask, jsonify
 import requests
 
 app = Flask(__name__)
 
-def get_metar():
-    url = "https://avwx.rest/api/metar/EGBB"
-    headers = {"Authorization": "Token my_secret_api_token"}
+def get_weather_data():
+    url = "https://api.open-meteo.com/v1/forecast"
     params = {
-        "format": "json"
+        "latitude": 52.6815,
+        "longitude": -1.8255,
+        "hourly": "temperature_2m,dew_point_2m,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
+        "wind_speed_unit": "kn",
+        "timezone": "Europe/London",
+        "forecast_days": 1
     }
-    response = requests.get(url, headers=headers, params=params)
-    if response.status_code == 200:
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
         data = response.json()
-        return data['sanitized']  # 'sanitized' key contains the METAR information
-    else:
-        return "Failed to fetch METAR data"
+        return data
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to fetch weather data: {e}")
+        return None
 
-@app.route('/')
-def index():
-    metar = get_metar()
-    return render_template('index.html', metar=metar)
+@app.route('/api/metar', methods=['GET'])
+def get_metar():
+    weather_data = get_weather_data()
+    metar = parse_weather_data(weather_data)
+    if metar:
+        return jsonify({'metar': metar}), 200
+    else:
+        return jsonify({'error': 'Failed to fetch weather data'}), 500
+
+def parse_weather_data(data):
+    if data is None:
+        return None
+
+    # Extracting relevant weather information
+    hourly_data = data['hourly'][0]  # Assuming we're interested in the first hourly forecast
+    wind_speed = hourly_data['wind_speed_10m']
+    wind_direction = hourly_data['wind_direction_10m']
+
+    # Constructing METAR-like information
+    metar = f"METAR GB-0199 (INFO) {wind_direction:03d}{wind_speed:02d}KT"
+
+    return metar
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
