@@ -10,10 +10,11 @@ def get_metar():
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         data = response.json()
+        print(data)  # Add this line to inspect the structure of the response
         return data['data'][0]['raw_text']
-
     else:
         return "Failed to fetch METAR data"
+
 
 @app.route('/')
 def index():
