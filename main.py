@@ -16,6 +16,7 @@ def get_metar():
         return "Failed to fetch METAR data"
 
 
+
 @app.route('/')
 def index():
     metar = get_metar()
