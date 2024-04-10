@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, render_template, jsonify
 import requests
 
 app = Flask(__name__)
@@ -22,14 +22,11 @@ def get_weather_data():
         print(f"Failed to fetch weather data: {e}")
         return None
 
-@app.route('/api/metar', methods=['GET'])
-def get_metar():
+@app.route('/')
+def index():
     weather_data = get_weather_data()
     metar = parse_weather_data(weather_data)
-    if metar:
-        return jsonify({'metar': metar}), 200
-    else:
-        return jsonify({'error': 'Failed to fetch weather data'}), 500
+    return render_template('index.html', metar=metar)
 
 def parse_weather_data(data):
     if data is None:
