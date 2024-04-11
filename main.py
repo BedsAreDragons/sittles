@@ -71,8 +71,9 @@ def parse_weather_data(data):
 @app.route('/')
 def index():
     weather_data = get_weather_data()
-    metar = parse_weather_data(weather_info)
+    metar = parse_weather_data(weather_data)  # Change weather_info to weather_data
     return render_template('index.html', metar=metar)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
