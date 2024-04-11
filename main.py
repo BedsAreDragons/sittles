@@ -1,5 +1,6 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template
 import requests
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -22,26 +23,43 @@ def get_weather_data():
         print(f"Failed to fetch weather data: {e}")
         return None
 
+def parse_weather_data(data):
+    if data is None:
+        return None
+
+    current_time_london = datetime.utcnow() + timedelta(hours=1)
+    current_hour = current_time_london.hour
+
+    # Extracting relevant weather information
+    hourly_data = data['hourly'][0]  # Assuming we're interested in the first hourly forecast
+    temperature = hourly_data['temperature_2m'][current_hour]
+    dew_point = hourly_data['dew_point_2m'][current_hour]
+    wind_speed = hourly_data['wind_speed_10m'][current_hour]
+    wind_direction = hourly_data['wind_direction_10m'][current_hour]
+    wind_gusts = hourly_data['wind_gusts_10m'][current_hour]
+    pressure = hourly_data['surface_pressure'][current_hour]
+
+    # Format time in Zulu
+    current_time_zulu = current_time_london.strftime("%d%H%MZ")
+
+    # Format wind direction and speed
+    wind_direction_str = "{:03d}".format(wind_direction)
+    wind_speed_str = "{:02d}".format(round(wind_speed))
+    wind_gusts_str = "{:02d}".format(round(wind_gusts))
+
+    realtemp = round(temperature)
+    realdew = round(dew_point)
+
+    # Format METAR-like string
+    metar = f"METAR GB-0199 AUTO {current_time_zulu} {wind_direction_str}{wind_speed_str}KT {realtemp}/{realdew} Q{int(pressure)}"
+
+    return metar
+
 @app.route('/')
 def index():
     weather_data = get_weather_data()
     metar = parse_weather_data(weather_data)
     return render_template('index.html', metar=metar)
 
-def parse_weather_data(data):
-    if data is None:
-        return None
-
-    # Extracting relevant weather information
-    hourly_data = data['hourly'][0]  # Assuming we're interested in the first hourly forecast
-    wind_speed = hourly_data['wind_speed_10m']
-    wind_direction = hourly_data['wind_direction_10m']
-
-    # Constructing METAR-like information
-    metar = f"METAR GB-0199 (INFO) {wind_direction:03d}{wind_speed:02d}KT"
-
-    return metar
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-
