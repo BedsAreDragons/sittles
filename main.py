@@ -71,7 +71,7 @@ def parse_weather_data(data):
 @app.route('/')
 def index():
     weather_data = get_weather_data()
-    metar = parse_weather_data(weather_data)
+    metar = parse_weather_data(metar)
     return render_template('index.html', metar=metar)
 
 if __name__ == '__main__':
