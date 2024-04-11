@@ -24,20 +24,32 @@ def get_weather_data():
         return None
 
 def parse_weather_data(data):
-    if data is None:
+    if data is None or 'hourly' not in data:
         return None
 
     current_time_london = datetime.utcnow() + timedelta(hours=1)
     current_hour = current_time_london.hour
 
     # Extracting relevant weather information
-    hourly_data = data['hourly'][0]  # Assuming we're interested in the first hourly forecast
-    temperature = hourly_data['temperature_2m'][current_hour]
-    dew_point = hourly_data['dew_point_2m'][current_hour]
-    wind_speed = hourly_data['wind_speed_10m'][current_hour]
-    wind_direction = hourly_data['wind_direction_10m'][current_hour]
-    wind_gusts = hourly_data['wind_gusts_10m'][current_hour]
-    pressure = hourly_data['surface_pressure'][current_hour]
+    hourly_data = data['hourly']
+    if not hourly_data:
+        return None
+
+    # Assuming we're interested in the first hourly forecast
+    if current_hour >= len(hourly_data):
+        return None
+
+    forecast_data = hourly_data[current_hour]
+    
+    temperature = forecast_data.get('temperature_2m')
+    dew_point = forecast_data.get('dew_point_2m')
+    wind_speed = forecast_data.get('wind_speed_10m')
+    wind_direction = forecast_data.get('wind_direction_10m')
+    wind_gusts = forecast_data.get('wind_gusts_10m')
+    pressure = forecast_data.get('surface_pressure')
+
+    if any(val is None for val in [temperature, dew_point, wind_speed, wind_direction, wind_gusts, pressure]):
+        return None
 
     # Format time in Zulu
     current_time_zulu = current_time_london.strftime("%d%H%MZ")
@@ -54,6 +66,7 @@ def parse_weather_data(data):
     metar = f"METAR GB-0199 AUTO {current_time_zulu} {wind_direction_str}{wind_speed_str}KT {realtemp}/{realdew} Q{int(pressure)}"
 
     return metar
+
 
 @app.route('/')
 def index():
