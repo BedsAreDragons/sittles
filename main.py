@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
-metars()
+
 
 def metars():
     url = "https://api.open-meteo.com/v1/forecast?latitude=52.706958&longitude=-1.75018&hourly=temperature_2m,dew_point_2m,rain,snowfall,pressure_msl,cloud_cover,visibility,wind_speed_180m,wind_direction_180m,wind_gusts_10m&wind_speed_unit=kn&timezone=Europe%2FLondon&forecast_days=1"
@@ -49,6 +49,11 @@ def metars():
 # Format METAR-like string
     metar = f"METAR GB-0199 AUTO {current_time_zulu} {wind_direction_str}{wind_speed_str}KT {realtemp}/{realdew} Q{int(pressure)}"
     print("METAR:", metar)
+
+
+
+
+metars()
 
 
 @app.route('/')
