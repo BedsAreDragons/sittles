@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    metar = "METAR GB-0199 AUTO " + datetime.utcNow() + "Z" # Change weather_info to weather_data
+    metar = ("METAR GB-0199 AUTO " + datetime.utcNow() + "Z") # Change weather_info to weather_data
     return render_template('index.html', metar=metar)
 
 
