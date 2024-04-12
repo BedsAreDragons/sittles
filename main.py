@@ -45,7 +45,7 @@ realdew = round(dew_point)
 
 # Format METAR-like string
 metar = f"METAR GB-0199 AUTO {current_time_zulu} {wind_direction_str}{wind_speed_str}KT {realtemp}/{realdew} Q{int(pressure)}"
-print("METAR:", metar_str)
+print("METAR:", metar)
 
 
 @app.route('/')
