@@ -27,8 +27,8 @@ snowfall = data["hourly"]["snowfall"][index]
 pressure = data["hourly"]["pressure_msl"][index]
 cloud_cover = data["hourly"]["cloud_cover"][index]
 visibility = data["hourly"]["visibility"][index]
-wind_speed = data["hourly"]["wind_speed_180m"][index]
-wind_direction = data["hourly"]["wind_direction_180m"][index]
+wind_speed = data["hourly"]["wind_speed_10m"][index]
+wind_direction = data["hourly"]["wind_direction_10m"][index]
 wind_gusts = data["hourly"]["wind_gusts_10m"][index]
 
 # Format time in Zulu
