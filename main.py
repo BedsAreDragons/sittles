@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
-while True: 
+
 url = "https://api.open-meteo.com/v1/forecast?latitude=52.706958&longitude=-1.75018&hourly=temperature_2m,dew_point_2m,rain,snowfall,pressure_msl,cloud_cover,visibility,wind_speed_180m,wind_direction_180m,wind_gusts_10m&wind_speed_unit=kn&timezone=Europe%2FLondon&forecast_days=1"
 
 # Get current time in London
