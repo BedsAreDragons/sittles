@@ -10,7 +10,7 @@ app = Flask(__name__)
 def index():
     weather_data = get_weather_data()
     metar = parse_weather_data(weather_data)  # Change weather_info to weather_data
-    return render_template('index.html', metar="METAR GB-0199 AUTO")
+    return render_template('index.html')
 
 
 if __name__ == '__main__':
