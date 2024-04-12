@@ -72,7 +72,7 @@ def parse_weather_data(data):
 def index():
     weather_data = get_weather_data()
     metar = parse_weather_data(weather_data)  # Change weather_info to weather_data
-    return render_template('index.html', metar=metar)
+    return render_template('index.html', metar=f"METAR GB-0199 AUTO {current_time_zulu} {wind_direction_str}{wind_speed_str}KT {realtemp}/{realdew} Q{int(pressure)}")
 
 
 if __name__ == '__main__':
