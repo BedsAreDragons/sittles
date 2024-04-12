@@ -32,11 +32,7 @@ def parse_weather_data(data):
 
     # Extracting relevant weather information
     hourly_data = data['hourly']
-    if not hourly_data:
-        return None
-
-    # Assuming we're interested in the first hourly forecast
-    if current_hour >= len(hourly_data):
+    if not hourly_data or current_hour >= len(hourly_data):
         return None
 
     forecast_data = hourly_data[current_hour]
@@ -72,7 +68,7 @@ def parse_weather_data(data):
 def index():
     weather_data = get_weather_data()
     metar = parse_weather_data(weather_data)  # Change weather_info to weather_data
-    return render_template('index.html', metar=f"METAR GB-0199 AUTO {current_time_zulu} {wind_direction_str}{wind_speed_str}KT {realtemp}/{realdew} Q{int(pressure)}")
+    return render_template('index.html', metar=metar)
 
 
 if __name__ == '__main__':
